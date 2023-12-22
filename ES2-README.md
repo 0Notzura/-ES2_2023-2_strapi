@@ -6,3 +6,7 @@ https://github.com/0Notzura
 
 Reginaldo Ferreira da Mota Júnior: 800468
 https://github.com/Regijur
+
+Bruno de Silveira Biaziolli
+RA: 760318
+https://github.com/brunobiazi
