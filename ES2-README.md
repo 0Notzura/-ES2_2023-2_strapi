@@ -3,3 +3,6 @@ https://github.com/vgmbs1lva
 
 Gabriel Mansano Pires:790951  
 https://github.com/0Notzura
+
+Reginaldo Ferreira da Mota Júnior: 800468
+https://github.com/Regijur
