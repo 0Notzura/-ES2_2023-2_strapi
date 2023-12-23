@@ -10,3 +10,6 @@ https://github.com/Regijur
 Bruno de Silveira Biaziolli
 RA: 760318
 https://github.com/brunobiazi
+
+Fernando Kiyoshi Kaida: 769667
+https://github.com/FKKAIDA
