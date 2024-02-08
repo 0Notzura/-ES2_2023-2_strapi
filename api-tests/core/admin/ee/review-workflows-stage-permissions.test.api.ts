@@ -84,8 +84,6 @@ describeOnCondition(edition === 'EE')('Review workflows', () => {
     strapi = await createStrapiInstance();
     rq = await createAuthRequest({ strapi });
 
-    workflow = await createWorkflow(baseWorkflow);
-
     // Get default roles
     const { body } = await rq.get('/admin/roles');
     roles = body.data;
