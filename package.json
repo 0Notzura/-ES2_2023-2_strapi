@@ -33,6 +33,7 @@
     "build:size": "cd examples/getstarted && yarn build",
     "build:ts": "nx run-many --target=build:ts --nx-ignore-cycles",
     "clean": "nx run-many --target=clean --nx-ignore-cycles",
+    "coverage": "jest --coverage && start coverage/lcov-report/index.html",
     "doc:api": "node scripts/open-api/serve.js",
     "format": "yarn format:code && yarn format:other",
     "format:code": "yarn prettier:code --write",
