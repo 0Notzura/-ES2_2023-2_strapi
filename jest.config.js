@@ -10,6 +10,9 @@ const config = {
     '<rootDir>/packages/providers/*/jest.config.js',
     '<rootDir>/.github/actions/*/jest.config.js',
   ],
+  collectCoverage: true,
+  coverageDirectory: 'coverage',
+  collectCoverageFrom: ['src/**/*.ts', '!src/**/*.spec.ts', '!src/**/*.test.ts'],
 };
 
 module.exports = config;
