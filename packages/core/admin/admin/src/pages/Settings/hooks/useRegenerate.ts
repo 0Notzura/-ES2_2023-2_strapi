@@ -28,14 +28,13 @@ export const useRegenerate = (
 
       if (onError) {
         onError(error);
-      } else {
-        if (error instanceof AxiosError) {
-          toggleNotification({
-            type: 'warning',
-            message: formatAPIError(error),
-          });
-        }
+      } else if (error instanceof AxiosError) {
+        toggleNotification({
+          type: 'warning',
+          message: formatAPIError(error),
+        });
       }
+      
     }
   };
 
