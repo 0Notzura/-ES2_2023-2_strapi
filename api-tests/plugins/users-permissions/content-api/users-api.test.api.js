@@ -49,11 +49,6 @@ describe('Users API', () => {
       expect.arrayContaining([expect.objectContaining(internals.role)])
     );
 
-    // eslint-disable-next-line no-unused-vars
-    const { nb_users: nbUsers, ...role } = findRes.body.roles.find(
-      (r) => r.name === internals.role.name
-    );
-
     expect(role).toMatchObject(internals.role);
 
     data.role = role;
