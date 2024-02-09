@@ -3,47 +3,9 @@ import CodeMirror from 'codemirror5';
 // Disabling eslint on purpose
 /* eslint-disable */
 
-const listRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
-const emptyListRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]|[*+-]|(\d+)[.)])(\s*)$/;
-const unorderedListRE = /[*+-]\s/;
-
-function isInputDisabled(cm: CodeMirror.Editor): boolean {
-  // @ts-expect-error - cm does not recognize disableInput.
-  return cm.getOption('disableInput');
-}
-
-function shouldInsertNewlineAndIndent(cm: CodeMirror.Editor, pos: CodeMirror.Position): boolean {
-  const eolState = cm.getStateAfter(pos.line);
-  const inList = eolState.list !== false;
-  const inQuote = eolState.quote !== 0;
-  const line = cm.getLine(pos.line);
-  const match = listRE.exec(line);
-  const cursorBeforeBullet = /^\s*$/.test(line.slice(0, pos.ch));
-
-  return !ranges[i].empty() || (!inList && !inQuote) || !match || cursorBeforeBullet;
-}
-
-function shouldEndListOrQuote(line: string, inQuote: boolean): boolean {
-  const endOfQuote = inQuote && />\s*$/.test(line);
-  const endOfList = !/>\s*$/.test(line);
-
-  return endOfQuote || endOfList;
-}
-
-function endOfQuoteOrList(cm: CodeMirror.Editor, inQuote: boolean, line: string, pos: CodeMirror.Position) {
-  if (shouldEndListOrQuote(line, inQuote)) {
-    cm.replaceRange('', { line: pos.line, ch: 0 }, { line: pos.line, ch: pos.ch + 1 });
-  }
-}
-
-function createNewlineAndIndentReplacement(cm: CodeMirror.Editor, match: RegExpExecArray): string {
-  const indent = match[1];
-  const after = match[5];
-  const numbered = !(unorderedListRE.test(match[2]) || match[2].indexOf('>') >= 0);
-  const bullet = numbered ? parseInt(match[3], 10) + 1 + match[4] : match[2].replace('x', ' ');
-
-  return '\n' + indent + bullet + after;
-}
+var listRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/,
+  emptyListRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]|[*+-]|(\d+)[.)])(\s*)$/,
+  unorderedListRE = /[*+-]\s/;
 
 /*
   functions coming from CodeMirror addons continuelist.js
@@ -55,37 +17,53 @@ function createNewlineAndIndentReplacement(cm: CodeMirror.Editor, match: RegExpE
 */
 
 function newlineAndIndentContinueMarkdownList(cm: CodeMirror.Editor) {
-  if (isInputDisabled(cm)) return CodeMirror.Pass;
+  // @ts-expect-error - cm does not recognize disableInput.
+  if (cm.getOption('disableInput')) return CodeMirror.Pass;
+  var ranges = cm.listSelections(),
+    replacements = [];
+  for (var i = 0; i < ranges.length; i++) {
+    var pos = ranges[i].head;
 
-  const ranges = cm.listSelections();
-  const replacements = [];
+    var eolState = cm.getStateAfter(pos.line);
+    var inList = eolState.list !== false;
+    var inQuote = eolState.quote !== 0;
 
-  for (let i = 0; i < ranges.length; i++) {
-    const pos = ranges[i].head;
-    const eolState = cm.getStateAfter(pos.line);
-    const inList = eolState.list !== false;
-    const inQuote = eolState.quote !== 0;
-    const line = cm.getLine(pos.line);
-    const match = listRE.exec(line);
-    const cursorBeforeBullet = /^\s*$/.test(line.slice(0, pos.ch));
-
-    if (shouldInsertNewlineAndIndent(cm, pos) || cursorBeforeBullet) {
+    var line = cm.getLine(pos.line),
+      match = listRE.exec(line);
+    var cursorBeforeBullet = /^\s*$/.test(line.slice(0, pos.ch));
+    if (!ranges[i].empty() || (!inList && !inQuote) || !match || cursorBeforeBullet) {
       cm.execCommand('newlineAndIndent');
       return;
     }
-
     if (emptyListRE.test(line)) {
-      endOfQuoteOrList(cm, inQuote, line, pos);
+      var endOfQuote = inQuote && />\s*$/.test(line);
+      var endOfList = !/>\s*$/.test(line);
+      if (endOfQuote || endOfList)
+        cm.replaceRange(
+          '',
+          {
+            line: pos.line,
+            ch: 0,
+          },
+          {
+            line: pos.line,
+            ch: pos.ch + 1,
+          }
+        );
       replacements[i] = '\n';
     } else {
-      replacements[i] = createNewlineAndIndentReplacement(cm, match);
-      if (numbered) incrementRemainingMarkdownListNumbers(cm, pos, match);
+      var indent = match[1],
+        after = match[5];
+      var numbered = !(unorderedListRE.test(match[2]) || match[2].indexOf('>') >= 0);
+      var bullet = numbered ? parseInt(match[3], 10) + 1 + match[4] : match[2].replace('x', ' ');
+      replacements[i] = '\n' + indent + bullet + after;
+
+      if (numbered) incrementRemainingMarkdownListNumbers(cm, pos);
     }
   }
 
   cm.replaceSelections(replacements);
 }
-
 
 function incrementRemainingMarkdownListNumbers(cm: CodeMirror.Editor, pos: CodeMirror.Position) {
   var startLine = pos.line,
