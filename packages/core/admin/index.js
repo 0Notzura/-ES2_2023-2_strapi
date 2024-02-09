@@ -24,7 +24,7 @@ async function build({ optimize }) {
     "[@strapi/admin]: the build api exported from this package is now deprecated. We don't plan to expose this for public consumption and this will be removed in V5."
   );
 
-  const enforceSourceMaps = process.env.STRAPI_ENFORCE_SOURCEMAPS === 'true' ?? false;
+  const enforceSourceMaps = (process.env.STRAPI_ENFORCE_SOURCEMAPS === 'true') ?? false;
 
   const cwd = process.cwd();
   const logger = createLogger({ debug: true, silent: false, timestamp: false });
@@ -154,8 +154,10 @@ const createLogger = (options = {}) => {
         return;
       }
 
+      const toConsoleDate = timestamp ? `\t[${new Date().toISOString()}]` : '';
+      
       console.log(
-        chalk.cyan(`[DEBUG]${timestamp ? `\t[${new Date().toISOString()}]` : ''}`),
+        chalk.cyan(`[DEBUG]${toConsoleDate}`),
         ...args
       );
     },
@@ -164,9 +166,11 @@ const createLogger = (options = {}) => {
       if (silent) {
         return;
       }
-
+      
+      const toConsoleDate = timestamp ? `\t[${new Date().toISOString()}]` : '';
+      
       console.info(
-        chalk.blue(`[INFO]${timestamp ? `\t[${new Date().toISOString()}]` : ''}`),
+        chalk.blue(`[INFO]${toConsoleDate}`),
         ...args
       );
     },
@@ -175,8 +179,10 @@ const createLogger = (options = {}) => {
       if (silent) {
         return;
       }
+      
+      const toConsoleDate = timestamp ? `\t[${new Date().toISOString()}]` : '';
 
-      console.info(chalk.blue(`${timestamp ? `\t[${new Date().toISOString()}]` : ''}`), ...args);
+      console.info(chalk.blue(`${toConsoleDate}`), ...args);
     },
 
     warn(...args) {
@@ -185,9 +191,11 @@ const createLogger = (options = {}) => {
       if (silent) {
         return;
       }
-
+      
+      const toConsoleDate = timestamp ? `\t[${new Date().toISOString()}]` : '';
+      
       console.warn(
-        chalk.yellow(`[WARN]${timestamp ? `\t[${new Date().toISOString()}]` : ''}`),
+        chalk.yellow(`[WARN]${toConsoleDate}`),
         ...args
       );
     },
@@ -198,9 +206,11 @@ const createLogger = (options = {}) => {
       if (silent) {
         return;
       }
-
+      
+      const toConsoleDate = timestamp ? `\t[${new Date().toISOString()}]` : '';
+      
       console.error(
-        chalk.red(`[ERROR]${timestamp ? `\t[${new Date().toISOString()}]` : ''}`),
+        chalk.red(`[ERROR]${toConsoleDate}`),
         ...args
       );
     },
